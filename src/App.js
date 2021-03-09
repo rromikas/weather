@@ -13,7 +13,19 @@ const App = ({ location }) => {
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    setPage(location ? 1 : 0);
+    store.dispatch({
+      type: "SET_TODAY_FORECAST",
+      payload: null,
+    });
+    store.dispatch({
+      type: "SET_WEEK_FORECAST",
+      payload: null,
+    });
+    store.dispatch({ type: "SET_LOCATION", payload: null });
+  }, []);
+
+  useEffect(() => {
+    // setPage(location ? 1 : 0);
   }, [location]);
   return (
     <Provider store={store}>
