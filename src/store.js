@@ -5,7 +5,7 @@ import storage from "redux-persist/lib/storage";
 function todaysForecastReducer(state = null, action) {
   switch (action.type) {
     case "SET_TODAY_FORECAST":
-      return { ...state, ...action.payload };
+      return action.payload;
     default:
       return state;
   }
