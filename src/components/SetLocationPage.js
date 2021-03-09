@@ -13,7 +13,6 @@ export const RequestGeolocation = (setLocation) => {
           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&result_type=locality|country&key=AIzaSyDmQAyt3ke92M1CYujRXDObR2GQ82ehYJU`
         ).then((x) => x.json());
         if (res.results[0]?.formatted_address) {
-          console.log(res.results[0].formatted_address);
           setLocation({
             lat: position.coords.latitude,
             lng: position.coords.longitude,

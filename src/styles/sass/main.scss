@@ -34,7 +34,7 @@ $breakpoints: (
 ) !default;
 
 /*values*/
-$space-values: (5, 10, 15, 20, 30, 40, 50) !default;
+$space-values: (0, 5, 10, 15, 20, 25, 30, 40, 50) !default;
 $display-values: ("flex", "inline-flex", "none", "block", "inline-block") !default;
 $justify-values: ("flex-start", "flex-end", "center", "space-between", "space-around") !default;
 $align-values: ("flex-start", "flex-end", "center") !default;
@@ -64,6 +64,7 @@ $font-values: (
   56,
   60,
   70,
+  76,
   80,
   90,
   100
