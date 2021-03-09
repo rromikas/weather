@@ -65,10 +65,12 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
     }
   }, [location]);
 
-  const todaysTemps = ["morning", "day", "evening", "night"].map((x) => ({
-    title: x,
-    temp: todayForecast[x],
-  }));
+  const todaysTemps = todayForecast
+    ? ["morning", "day", "evening", "night"].map((x) => ({
+        title: x,
+        temp: todayForecast[x],
+      }))
+    : [];
 
   return todayForecast && weekForecast && location ? (
     <div className="p-10 p-md-20 p-lg-30 page-container">
