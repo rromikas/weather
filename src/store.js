@@ -2,10 +2,7 @@ import { createStore, combineReducers } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-function todaysForecastReducer(
-  state = { morning: "", day: "", evening: "", night: "", date: "" },
-  action
-) {
+function todaysForecastReducer(state = null, action) {
   switch (action.type) {
     case "SET_TODAY_FORECAST":
       return { ...state, ...action.payload };
@@ -14,7 +11,7 @@ function todaysForecastReducer(
   }
 }
 
-function weekForecastReducer(state = [], action) {
+function weekForecastReducer(state = null, action) {
   switch (action.type) {
     case "SET_WEEK_FORECAST":
       return action.payload;
@@ -23,7 +20,7 @@ function weekForecastReducer(state = [], action) {
   }
 }
 
-function locationReducer(state = { address: "", lat: "", lng: "" }, action) {
+function locationReducer(state = null, action) {
   switch (action.type) {
     case "SET_LOCATION":
       return action.payload;
