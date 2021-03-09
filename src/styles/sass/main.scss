@@ -1,0 +1,231 @@
+@mixin make-responsive-property($values, $prefixes, $breakpoints, $units: "") {
+  @each $breakpoint-name, $breakpoint-value in $breakpoints {
+    // if xs value = 0, set it global without media queries
+    @if ($breakpoint-value == 0) {
+      @each $attr-short, $attr-long in $prefixes {
+        @each $value in $values {
+          .#{$attr-short}-#{$value} {
+            #{$attr-long}: #{$value}#{$units}#{" !important"};
+          }
+        }
+      }
+    }
+    // breakpoint values that not equal to 0
+    @else {
+      @media screen and (min-width: $breakpoint-value) {
+        @each $attr-short, $attr-long in $prefixes {
+          @each $value in $values {
+            .#{$attr-short}-#{$breakpoint-name}-#{$value} {
+              #{$attr-long}: #{$value}#{$units}#{" !important"};
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+$breakpoints: (
+  xs: 0,
+  sm: 480px,
+  md: 768px,
+  lg: 960px,
+  xl: 1280px,
+) !default;
+
+/*values*/
+$space-values: (5, 10, 15, 20, 30, 40, 50) !default;
+$display-values: ("flex", "inline-flex", "none", "block", "inline-block") !default;
+$justify-values: ("flex-start", "flex-end", "center", "space-between", "space-around") !default;
+$align-values: ("flex-start", "flex-end", "center") !default;
+$font-values: (
+  12,
+  14,
+  16,
+  18,
+  20,
+  22,
+  24,
+  26,
+  28,
+  30,
+  32,
+  34,
+  36,
+  38,
+  40,
+  42,
+  44,
+  46,
+  48,
+  50,
+  52,
+  54,
+  56,
+  60,
+  70,
+  80,
+  90,
+  100
+) !default;
+$font-weight-values: (300, 400, 500, 600, 700) !default;
+
+/*prefixes*/
+$padding-prefixes: (
+  p: padding,
+  pt: padding-top,
+  pr: padding-right,
+  pb: padding-bottom,
+  pl: padding-left,
+) !default;
+
+$margin-prefixes: (
+  m: margin,
+  mt: margin-top,
+  mr: margin-right,
+  mb: margin-bottom,
+  ml: margin-left,
+) !default;
+
+$display-prefixes: (
+  d: display,
+) !default;
+
+$justify-prefixes: (
+  justify: justify-content,
+) !default;
+
+$align-prefixes: (
+  align: align-items,
+) !default;
+
+$font-prefixes: (
+  font: font-size,
+) !default;
+
+$font-weight-prefixes: (
+  font-w: font-weight,
+) !default;
+
+@include make-responsive-property($display-values, $display-prefixes, $breakpoints);
+@include make-responsive-property($space-values, $margin-prefixes, $breakpoints, "px");
+@include make-responsive-property($space-values, $padding-prefixes, $breakpoints, "px");
+@include make-responsive-property(("auto"), $margin-prefixes, $breakpoints);
+@include make-responsive-property($justify-values, $justify-prefixes, $breakpoints);
+@include make-responsive-property($align-values, $align-prefixes, $breakpoints);
+@include make-responsive-property($font-values, $font-prefixes, $breakpoints, "px");
+@include make-responsive-property(
+  $font-weight-values,
+  $font-weight-prefixes,
+  (
+    xs: 0,
+  )
+);
+
+$common-text-color: #4c6772;
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  color: $common-text-color;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input,
+button {
+  font-family: "Roboto", sans-serif;
+}
+
+.app-container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: auto;
+  background: linear-gradient(102.46deg, #fe756d -3.64%, #ff8f69 100%);
+}
+
+.page-container {
+  max-width: 900px;
+  width: 100%;
+  min-height: 550px;
+  margin: auto;
+  background: white;
+  box-shadow: 0px 0px 13px rgba(0, 0, 0, 0.43);
+}
+
+.location-search-input {
+  width: 100%;
+  text-align: center;
+  border: none;
+  padding-right: 55px;
+  padding-left: 55px;
+  border-bottom: 2px solid $common-text-color;
+  color: $common-text-color;
+  outline: 0;
+  font-size: 42px;
+  text-overflow: ellipsis !important;
+  white-space: nowrap;
+}
+
+.location-search-input::placeholder {
+  color: #a9a9a9;
+}
+
+.autocomplete-dropdown-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.23);
+  background: white;
+  cursor: pointer;
+}
+
+.suggestion-item {
+  padding: 5px 10px;
+}
+
+.suggestion-item--active {
+  padding: 5px 10px;
+  background: transparentize($color: $common-text-color, $amount: 0.9);
+}
+
+.units-toggle-btn-container {
+  border-radius: 25px;
+  width: 100px;
+  padding: 2px;
+  height: 40px;
+  border: 1px solid black;
+}
+
+.units-toggle-btn {
+  height: 100%;
+  width: 45px;
+  border: 1px solid black;
+  border-radius: 25px;
+  cursor: pointer;
+  background: white;
+  position: relative;
+  z-index: 4;
+}
+
+.text-colored {
+  color: #e79482;
+}
+
+.row {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.col {
+  flex: 1;
+  min-width: 0;
+}
