@@ -75,7 +75,7 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
           <div className={`units-toggle-btn-container`}>
             <div
               className="units-toggle-btn"
-              style={{ left: isCelcius ? 1 : 52 }}
+              style={{ left: !isCelcius ? 1 : 52 }}
               onClick={() => store.dispatch({ type: "CHANGE_UNITS" })}
             ></div>
           </div>

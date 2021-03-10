@@ -10,9 +10,11 @@ import Loader from "components/Loader";
 
 const App = ({ location }) => {
   const [page, setPage] = useState(0);
+
   useEffect(() => {
     setPage(location ? 1 : 0);
   }, [location]);
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
