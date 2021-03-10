@@ -2,10 +2,10 @@ import { MdArrowBack } from "react-icons/md";
 import { store } from "store";
 import { connect } from "react-redux";
 import { useEffect } from "react";
-import { Flipper, Flipped } from "react-flip-toolkit";
 import moment from "moment";
 import weatherIconsMappings from "icons/mappings.json";
 import { capitalize, getIconClass, convertCelciusToFarenheit, getOrdinalEnding } from "helpers";
+import AnimatedSlider from "components/AnimatedSlider";
 
 const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius }) => {
   const getBack = () => {
@@ -51,18 +51,20 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
       }))
     : [];
 
-  const weekdays = moment.weekdays();
-  const weekdayIndex = moment().day();
   const mostRecentDate = todayForecast ? new Date(todayForecast.date.toString()) : new Date();
 
   return todayForecast && weekForecast && location ? (
     <div className="page-container">
-      <div className="d-flex  justify-space-between align-center p-30 mb-10">
-        <div className="d-flex align-center font-w-700 font-sm-40 font-30">
-          <MdArrowBack className="mr-sm-30 mr-20" onClick={getBack}></MdArrowBack>
+      <div className="row justify-space-between align-center p-30">
+        <div className="d-flex align-center font-w-700 font-sm-40 font-30 mb-10">
+          <MdArrowBack
+            className="mr-sm-30 mr-20"
+            style={{ cursor: "pointer" }}
+            onClick={getBack}
+          ></MdArrowBack>
           <div className="pr-10">{location.address.split(",")[0]}</div>
         </div>
-        <div style={{ position: "relative" }}>
+        <div style={{ position: "relative" }} className="mb-10">
           <div
             style={{ position: "absolute", width: "100%", height: "100%", padding: "0 20px" }}
             className="d-flex justify-space-between align-center font-w-700"
@@ -70,19 +72,13 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
             <div>°C</div>
             <div>°F</div>
           </div>
-          <Flipper
-            flipKey={isCelcius}
-            className={`units-toggle-btn-container d-flex align-center ${
-              isCelcius ? "justify-flex-end" : "justify-flex-start"
-            }`}
-          >
-            <Flipped flipId="toggle">
-              <div
-                className="units-toggle-btn"
-                onClick={() => store.dispatch({ type: "CHANGE_UNITS" })}
-              ></div>
-            </Flipped>
-          </Flipper>
+          <div className={`units-toggle-btn-container`}>
+            <div
+              className="units-toggle-btn"
+              style={{ left: isCelcius ? 1 : 52 }}
+              onClick={() => store.dispatch({ type: "CHANGE_UNITS" })}
+            ></div>
+          </div>
         </div>
       </div>
       <div className="font-sm-32 font-24 font-w-300 pl-30 pr-30 mb-20">
@@ -117,26 +113,7 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
           ))}
         </div>
       </div>
-      <div className="mb-30" style={{ maxWidth: "100%", overflow: "auto", paddingBottom: 10 }}>
-        <div className="row pl-20 pl-sm-30 pr-20 pr-sm-30" style={{ minWidth: 710 }}>
-          {weekForecast.map((x, i) => (
-            <div
-              key={`daily-forecast-${i}`}
-              className="col d-flex justify-center"
-              style={{ textAlign: "center" }}
-            >
-              <div>
-                <div className="mb-20">{weekdays[(weekdayIndex + i) % 7]}</div>
-                <i className={getIconClass(x.icon, true) + " font-40 mb-20"}></i>
-                <div>
-                  {isCelcius ? x.temp.toFixed(0) : convertCelciusToFarenheit(x.temp).toFixed(0)}
-                  {isCelcius ? "°C" : "°F"}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <AnimatedSlider weekForecast={weekForecast} isCelcius={isCelcius}></AnimatedSlider>
     </div>
   ) : null;
 };
@@ -146,6 +123,7 @@ function mapp(state, ownProps) {
     todayForecast: state.todayForecast,
     weekForecast: state.weekForecast,
     isCelcius: state.isCelcius,
+    location: state.location,
     ...ownProps,
   };
 }

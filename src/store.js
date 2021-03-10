@@ -37,11 +37,21 @@ function isCelciusReducer(state = true, action) {
   }
 }
 
+function loaderReducer(state = false, action) {
+  switch (action.type) {
+    case "SET_LOADING":
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers({
   todayForecast: todaysForecastReducer,
   weekForecast: weekForecastReducer,
   location: locationReducer,
   isCelcius: isCelciusReducer,
+  loading: loaderReducer,
 });
 
 const persistConfig = {

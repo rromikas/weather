@@ -5,26 +5,25 @@ import SetLocationPage from "components/SetLocationPage";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "store";
 import { Provider, connect } from "react-redux";
-import { Flipper } from "react-flip-toolkit";
 import CityForecastsPage from "components/CityForecastsPage";
+import Loader from "components/Loader";
 
 const App = ({ location }) => {
-  const setLocation = (value) => store.dispatch({ type: "SET_LOCATION", payload: value });
   const [page, setPage] = useState(0);
-
   useEffect(() => {
     setPage(location ? 1 : 0);
   }, [location]);
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Flipper className="app-container">
+        <div className="app-container">
           {page === 0 ? (
-            <SetLocationPage setLocation={setLocation}></SetLocationPage>
+            <SetLocationPage></SetLocationPage>
           ) : page === 1 ? (
-            <CityForecastsPage location={location}></CityForecastsPage>
+            <CityForecastsPage></CityForecastsPage>
           ) : null}
-        </Flipper>
+        </div>
+        <Loader></Loader>
       </PersistGate>
     </Provider>
   );

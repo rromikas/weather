@@ -1,6 +1,7 @@
 import PlacesAutocomplete from "components/PlacesAutocomplete";
+import { store } from "store";
 
-export const RequestGeolocation = (setLocation) => {
+export const RequestGeolocation = () => {
   function onLocationError(er) {
     alert("No access to user location: " + er.message);
   }
@@ -9,14 +10,25 @@ export const RequestGeolocation = (setLocation) => {
   } else {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        store.dispatch({ type: "SET_LOADING", payload: true });
         let res = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&result_type=locality|country&key=AIzaSyDmQAyt3ke92M1CYujRXDObR2GQ82ehYJU`
-        ).then((x) => x.json());
-        if (res.results[0]?.formatted_address) {
-          setLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            address: res.results[0].formatted_address,
+        )
+          .then((x) => x.json())
+          .catch((error) => {
+            console.log("error", error);
+            return { error };
+          });
+        store.dispatch({ type: "SET_LOADING", payload: false });
+
+        if (!res.error && res.results[0]?.formatted_address) {
+          store.dispatch({
+            type: "SET_LOCATION",
+            payload: {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              address: res.results[0].formatted_address,
+            },
           });
         }
       },
