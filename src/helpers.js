@@ -10,14 +10,16 @@ export const convertCelciusToFarenheit = (c) => {
 
 export const capitalize = (str) => str.charAt(0).toUpperCase() + str.substring(1);
 
-export const getIconClass = (id, neutral = false) => {
+export const getIconClass = (id, dayTime, neutral = false) => {
   var prefix = "wi wi-";
   var code = id;
+
   var icon = weatherIconsMappings[code].icon;
 
   // If we are not in the ranges mentioned above, add a day/night prefix.
   if (!(code > 699 && code < 800) && !(code > 899 && code < 1000) && !neutral) {
-    icon = "day-" + icon;
+    icon = icon === "sunny" ? (dayTime === "day" ? icon : "clear") : icon;
+    icon = dayTime + "-" + icon;
   }
 
   //if there is no such neutral icon

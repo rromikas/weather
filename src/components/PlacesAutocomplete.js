@@ -17,8 +17,8 @@ const LocationSearchInput = () => {
     store.dispatch({ type: "SET_LOADING", payload: true });
     geocodeByAddress(value)
       .then((results) => {
-        selectedCity = results[0].address_components.find((x) => x.types.includes("locality"))
-          .long_name;
+        const locality = results[0].address_components.find((x) => x.types.includes("locality"));
+        selectedCity = locality ? locality.long_name : value;
         return getLatLng(results[0]);
       })
       .then((latLng) => {

@@ -26,7 +26,7 @@ const AnimatedSlider = ({ weekForecast, isCelcius }) => {
   }, [counter]);
 
   const weekdays = moment.weekdays();
-  const weekdayIndex = moment().day();
+  const weekdayIndex = moment.unix(weekForecast[0].date).day();
 
   return (
     <div
@@ -45,7 +45,7 @@ const AnimatedSlider = ({ weekForecast, isCelcius }) => {
           >
             <div>
               <div className="mb-20">{weekdays[(weekdayIndex + i) % 7]}</div>
-              <i className={getIconClass(x.icon, true) + " font-40 mb-20"}></i>
+              <i className={getIconClass(x.icon, x.dayTime, true) + " font-40 mb-20"}></i>
               <div>
                 {isCelcius ? x.temp.toFixed(0) : convertCelciusToFarenheit(x.temp).toFixed(0)}
                 {isCelcius ? "°C" : "°F"}

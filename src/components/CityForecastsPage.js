@@ -17,28 +17,37 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
   useEffect(() => {
     if (location) {
       (async function getForecasts() {
-        let data;
-        if (process.env.NODE_ENV === "production" || !localStorage.getItem("weather")) {
-          data = await fetch(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${location.lat}&lon=${location.lng}&exclude=minutely,alerts&units=metric&appid=${process.env.REACT_APP_WEATHER_API_KEY}`
-          ).then((x) => x.json());
-          localStorage.setItem("weather", JSON.stringify(data));
-        } else {
-          data = JSON.parse(localStorage.getItem("weather"));
-        }
+        let data = await fetch(
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${location.lat}&lon=${location.lng}&exclude=minutely,hourly,alerts&units=metric&appid=${process.env.REACT_APP_WEATHER_API_KEY}`
+        ).then((x) => x.json());
 
         const { morn, day, eve, night } = data.daily[0].temp;
-        const now = data.hourly[0].temp;
-        const nowIcon = data.hourly[0].weather[0].id;
+        const now = data.current.temp;
+        const nowIcon = data.current.weather[0].id;
+        const dayTime =
+          data.current.dt > data.current.sunset || data.current.dt < data.current.sunrise
+            ? "night"
+            : "day";
         store.dispatch({
           type: "SET_TODAY_FORECAST",
-          payload: { morning: morn, day, evening: eve, night, now, nowIcon, date: new Date() },
+          payload: {
+            morning: morn,
+            day,
+            evening: eve,
+            night,
+            now,
+            nowIcon,
+            date: data.current.dt,
+            dayTime,
+          },
         });
         store.dispatch({
           type: "SET_WEEK_FORECAST",
-          payload: data.daily
-            .slice(0, 7)
-            .map((x) => ({ icon: x.weather[0].id, temp: (x.temp.min + x.temp.max) / 2 })),
+          payload: data.daily.slice(0, 7).map((x) => ({
+            icon: x.weather[0].id,
+            temp: (x.temp.min + x.temp.max) / 2,
+            date: x.dt,
+          })),
         });
       })();
     }
@@ -51,7 +60,7 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
       }))
     : [];
 
-  const mostRecentDate = todayForecast ? new Date(todayForecast.date.toString()) : new Date();
+  const mostRecentDate = todayForecast ? new Date(todayForecast.date * 1000) : new Date();
 
   return todayForecast && weekForecast && location ? (
     <div className="page-container">
@@ -99,7 +108,12 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
               : convertCelciusToFarenheit(todayForecast.now).toFixed(0)}
             {isCelcius ? "°C" : "°F"}
           </div>
-          <i className={getIconClass(todayForecast.nowIcon) + " font-sm-100 font-70 mr-sm-50"}></i>
+          <i
+            className={
+              getIconClass(todayForecast.nowIcon, todayForecast.dayTime) +
+              " font-sm-100 font-70 mr-sm-50"
+            }
+          ></i>
         </div>
         <div style={{ width: 160 }} className="font-24 font-w-300 mb-50">
           {todaysTemps.map((x, i) => (
