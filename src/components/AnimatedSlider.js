@@ -47,7 +47,7 @@ const AnimatedSlider = ({ weekForecast, isCelcius }) => {
               <div className="mb-20">{weekdays[(weekdayIndex + i) % 7]}</div>
               <i className={getIconClass(x.icon, x.dayTime, true) + " font-40 mb-20"}></i>
               <div>
-                {isCelcius ? x.temp.toFixed(0) : convertCelciusToFarenheit(x.temp).toFixed(0)}
+                {isCelcius ? Math.round(x.temp) : Math.round(convertCelciusToFarenheit(x.temp))}
                 {isCelcius ? "°C" : "°F"}
               </div>
             </div>
