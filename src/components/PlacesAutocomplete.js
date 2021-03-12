@@ -4,13 +4,13 @@ import { MdSearch } from "react-icons/md";
 import { store } from "store";
 
 const LocationSearchInput = () => {
-  const [address, setAddress] = useState({ value: "", selected: false });
+  const [address, setAddress] = useState("");
   const [error, setError] = useState(null);
   const setLocation = (value) => store.dispatch({ type: "SET_LOCATION", payload: value });
 
-  const handleChange = (value, selected = false) => {
+  const handleChange = (value) => {
     setError(null);
-    setAddress((prev) => ({ ...prev, value, selected }));
+    setAddress(value);
   };
 
   const handleSelect = async (value) => {
@@ -64,7 +64,7 @@ const LocationSearchInput = () => {
   return (
     <PlacesAutocomplete
       searchOptions={{ types: ["(cities)"] }}
-      value={address.value}
+      value={address}
       onChange={handleChange}
       onSelect={handleSelect}
     >
@@ -80,11 +80,7 @@ const LocationSearchInput = () => {
             />
             <MdSearch
               onClick={() => {
-                if (address.selected) {
-                  handleSelect(address.value);
-                } else {
-                  setError("City not found");
-                }
+                handleSelect(address);
               }}
               size={32}
               style={{
