@@ -105,7 +105,7 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
           <div className="font-sm-100 font-70 font-w-500 mr-sm-50 mr-40">
             {isCelcius
               ? Math.round(todayForecast.now)
-              : Math.round(convertCelciusToFarenheit(todayForecast.now))}
+              : Math.round(convertCelciusToFarenheit(Math.round(todayForecast.now)))}
             {isCelcius ? "°C" : "°F"}
           </div>
           <i
@@ -120,7 +120,9 @@ const CityForecastsPage = ({ location, weekForecast, todayForecast, isCelcius })
             <div key={`todays-temp-${i}`} className="d-flex justify-space-between">
               <div>{x.title}</div>
               <div>
-                {isCelcius ? Math.round(x.temp) : Math.round(convertCelciusToFarenheit(x.temp))}
+                {isCelcius
+                  ? Math.round(x.temp)
+                  : Math.round(convertCelciusToFarenheit(Math.round(x.temp)))}
                 {isCelcius ? "°C" : "°F"}
               </div>
             </div>
