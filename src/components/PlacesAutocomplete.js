@@ -14,50 +14,60 @@ const LocationSearchInput = () => {
   };
 
   const handleSelect = async (value) => {
-    store.dispatch({ type: "SET_LOADING", payload: true });
+    if (!value) {
+      setError("Please type a city name");
+    } else {
+      store.dispatch({ type: "SET_LOADING", payload: true });
 
-    let places = await (function getPlaces() {
-      return new Promise((resolve, reject) => {
-        new window.google.maps.places.AutocompleteService().getPlacePredictions(
-          {
-            input: value,
-          },
-          resolve
-        );
-      });
-    })();
+      let places = await (function getPlaces() {
+        return new Promise((resolve, reject) => {
+          new window.google.maps.places.AutocompleteService()
+            .getPlacePredictions(
+              {
+                input: value,
+              },
+              (res) => {
+                resolve(res);
+              }
+            )
+            .catch((error) => {
+              resolve({ error });
+            });
+        });
+      })();
 
-    if (!places.error) {
-      let realPlace = places.find((x) => x.description === value);
-      if (!realPlace) {
-        realPlace = places.find((x) =>
-          x.description
-            .split(", ")
-            .map((x) => x.toLowerCase())
-            .includes(value.toLowerCase())
-        );
-      }
+      if (!places.error) {
+        let realPlace = places.find((x) => x.description === value);
+        if (!realPlace) {
+          realPlace = places.find((x) =>
+            x.description
+              .split(", ")
+              .map((x) => x.toLowerCase())
+              .includes(value.toLowerCase())
+          );
+        }
 
-      if (realPlace) {
-        geocodeByAddress(value)
-          .then((results) => {
-            return getLatLng(results[0]);
-          })
-          .then((latLng) => {
-            setLocation({ ...latLng, address: realPlace.description.split(",")[0] });
-            store.dispatch({ type: "SET_LOADING", payload: false });
-          })
-          .catch((error) => {
-            console.error("Error", error);
-            store.dispatch({ type: "SET_LOADING", payload: false });
-          });
+        if (realPlace) {
+          geocodeByAddress(value)
+            .then((results) => {
+              return getLatLng(results[0]);
+            })
+            .then((latLng) => {
+              setLocation({ ...latLng, address: realPlace.description.split(",")[0] });
+              store.dispatch({ type: "SET_LOADING", payload: false });
+            })
+            .catch((error) => {
+              console.error("Error", error);
+              store.dispatch({ type: "SET_LOADING", payload: false });
+            });
+        } else {
+          setError("City not found");
+          store.dispatch({ type: "SET_LOADING", payload: false });
+        }
       } else {
-        setError("City not found");
+        setError("Please try again");
         store.dispatch({ type: "SET_LOADING", payload: false });
       }
-    } else {
-      setError("Api related error");
-      store.dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 

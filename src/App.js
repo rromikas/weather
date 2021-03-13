@@ -12,6 +12,7 @@ const App = ({ location }) => {
   const [page, setPage] = useState(0);
 
   useEffect(() => {
+    store.dispatch({ type: "SET_LOADING", payload: false });
     setPage(location ? 1 : 0);
   }, [location]);
 
